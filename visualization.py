@@ -1,24 +1,23 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
-def visualize_passenger_flow(daily_passengers):
-    #визуал поток людей
-    plt.figure(figsize=(10, 5))
-    plt.plot(daily_passengers.index, daily_passengers['passenger_count'], label="Actual data")
-    plt.xlabel("Date")
-    plt.ylabel("Passenger count")
-    plt.title("Daily Passenger Flow")
-    plt.legend()
+def plot_correlation_matrix(train_data):
+    numeric_columns = train_data.select_dtypes(include=[np.number]).columns
+    plt.figure(figsize=(14, 10))
+    sns.heatmap(train_data[numeric_columns].corr(), annot=True, fmt=".2f", cmap='coolwarm')
+    plt.title("Correlation Matrix")
     plt.show()
 
-    #считание сред
-    daily_passengers['moving_average'] = daily_passengers['passenger_count'].rolling(window=7).mean()
-
-    #визуал средн
-    plt.figure(figsize=(10, 5))
-    plt.plot(daily_passengers.index, daily_passengers['passenger_count'], label="Actual data")
-    plt.plot(daily_passengers.index, daily_passengers['moving_average'], label="7-Day Moving Average", color="orange")
-    plt.xlabel("Date")
-    plt.ylabel("Passenger count")
-    plt.title("Passenger Flow with Moving Average")
+def plot_predictions(y_val, y_pred):
+    plt.figure(figsize=(10, 6))
+    plt.plot(y_val['6~7_ride'].values, label='Фактические 6~7_ride', marker='o')
+    plt.plot(y_pred[:, 0], label='Предсказанные 6~7_ride', marker='x')
+    plt.plot(y_val['7~8_ride'].values, label='Фактические 7~8_ride', marker='o')
+    plt.plot(y_pred[:, 1], label='Предсказанные 7~8_ride', marker='x')
+    plt.title('Фактические и Предсказанные Значения')
+    plt.xlabel('Индекс')
+    plt.ylabel('Количество пассажиров')
     plt.legend()
+    plt.grid()
     plt.show()
